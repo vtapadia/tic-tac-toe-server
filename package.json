@@ -4,7 +4,8 @@
   "description": "Tic Tac Toe Service in Nodejs",
   "main": "dist/server.js",
   "scripts": {
-    "start": "tsc && npm run dist/server.js",
+    "dev": "nodemon",
+    "start": "ts-node src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,7 +34,8 @@
     "copyfiles": "^2.3.0",
     "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
-    "ts-node": "^8.10.2"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3"
   },
   "nodemonConfig": {
     "ignore": [
@@ -42,7 +44,11 @@
       ".git",
       "node_modules"
     ],
-    "verbose": true,
-    "ext": "js"
+    "ext": "ts",
+    "exec": "npm start",
+    "watch": [
+      "src"
+    ],
+    "verbose": true
   }
 }

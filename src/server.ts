@@ -1,8 +1,8 @@
-'use strict';
+import * as Hapi from "@hapi/hapi";
 
-const Hapi = require('@hapi/hapi');
+// const Hapi = require('@hapi/hapi');
 
-const server = Hapi.server({
+const server:Hapi.Server = new Hapi.Server({
     port: 3000,
     host: 'localhost'
 });
