@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/vtapadia/tic-tac-toe-server#readme",
   "dependencies": {
-    "@hapi/hapi": "^19.1.1"
+    "@hapi/hapi": "^19.1.1",
+    "hapi-pino": "^8.0.1"
   },
   "devDependencies": {
     "@types/hapi": "^18.0.3",
