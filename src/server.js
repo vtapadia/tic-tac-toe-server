@@ -7,6 +7,14 @@ const server = Hapi.server({
     host: 'localhost'
 });
 
+server.route({
+    method: 'GET',
+    path: '/hello',
+    handler: function (request, h) {
+        return { msg: 'Hello World!' };
+    }
+});
+
 const init = async () => {
     try {
         await server.start(); // the builtin server.start method is async
@@ -19,7 +27,6 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-
     console.log(err);
     process.exit(1);
 });

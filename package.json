@@ -2,9 +2,9 @@
   "name": "tic-tac-toe-server",
   "version": "1.0.0",
   "description": "Tic Tac Toe Service in Nodejs",
-  "main": "src/index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "npx nodemon src/server.js",
+    "start": "tsc && npm run dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,5 +26,23 @@
   "homepage": "https://github.com/vtapadia/tic-tac-toe-server#readme",
   "dependencies": {
     "@hapi/hapi": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/hapi": "^18.0.3",
+    "@types/node": "^14.0.5",
+    "copyfiles": "^2.3.0",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*",
+      ".git",
+      "node_modules"
+    ],
+    "verbose": true,
+    "ext": "js"
   }
 }
