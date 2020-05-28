@@ -1,0 +1,30 @@
+{
+  "name": "tic-tac-toe-server",
+  "version": "1.0.0",
+  "description": "Tic Tac Toe Service in Nodejs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "npx nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vtapadia/tic-tac-toe-server.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "author": "Varesh Tapadia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vtapadia/tic-tac-toe-server/issues"
+  },
+  "homepage": "https://github.com/vtapadia/tic-tac-toe-server#readme",
+  "dependencies": {
+    "@hapi/hapi": "^19.1.1"
+  }
+}
