@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "start": "ts-node src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsc && lab --sourcemaps --transform node_modules/lab-transform-typescript"
   },
   "repository": {
     "type": "git",
@@ -30,9 +30,12 @@
     "hapi-pino": "^8.0.1"
   },
   "devDependencies": {
+    "@hapi/code": "^8.0.1",
+    "@hapi/lab": "^22.0.4",
     "@types/hapi": "^18.0.3",
     "@types/node": "^14.0.5",
     "copyfiles": "^2.3.0",
+    "lab-transform-typescript": "^3.0.1",
     "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
