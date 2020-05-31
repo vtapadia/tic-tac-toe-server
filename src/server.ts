@@ -1,7 +1,9 @@
 import * as Hapi from "@hapi/hapi";
 
+const port:number = parseInt(process.env.PORT) || 3000;
+
 const server:Hapi.Server = new Hapi.Server({
-    port: 3000,
+    port: port,
     host: 'localhost'
 });
 
