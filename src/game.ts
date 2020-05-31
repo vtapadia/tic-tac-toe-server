@@ -1,10 +1,12 @@
+import {Player} from "./player";
+
 export class Board {
   playerX: Player;
   playerO: Player;
   board: Mark[][];
   inProgress: boolean = true;
   
-  constructor(readonly id:number){
+  constructor(readonly id:string){
     this.board = [[,,],[,,],[,,]];
   }
 
@@ -78,6 +80,3 @@ enum Mark {
   X,O
 };
 
-class Player {
-  constructor(readonly name:String){}
-}

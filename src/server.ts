@@ -1,4 +1,8 @@
 import * as Hapi from "@hapi/hapi";
+import * as Joi from "@hapi/joi";
+import {v4 as uuid} from 'uuid';
+import {Board} from "./game";
+import {Player} from "./player";
 
 const port:number = parseInt(process.env.PORT) || 3000;
 
@@ -7,6 +11,8 @@ const server:Hapi.Server = new Hapi.Server({
     host: '0.0.0.0'
 });
 
+const allGames = new Map();
+
 server.route({
     method: 'GET',
     path: '/hello',
@@ -14,6 +20,43 @@ server.route({
         return { msg: 'Hello World!' };
     }
 });
+
+server.route({
+    method: 'POST',
+    path: '/api/game/{gameId?}', 
+    handler: function (request, h) {
+        let userName = (request.payload && request.payload.userName) ? request.payload.userName : 'Guest';
+        let player = new Player(uuid(), userName);
+        let gameId = request.params.gameId ? request.params.gameId : uuid();
+        
+        if (request.params.gameId) {
+            request.logger.info("Joining a game request");
+            //Join game flow
+            if (allGames.has(request.params.gameId)) {
+                let b = allGames.get(request.params.gameId);
+                b.addPlayer(player);
+            } else {
+                //Game not found. 
+                request.logger.error("Game ID not found");
+            }
+        } else {
+            //Create game
+            let b = new Board(gameId);
+            b.addPlayer(player);
+            allGames.set(b.id, b);
+        }
+        // const userName = request.params.gameId ? request.params.user : 'Guest';
+        return {"game": gameId, "player": player};
+    },
+    options: {
+        validate: {
+            payload: Joi.object({
+                userName: Joi.string().min(1).max(140)
+            })
+        }
+    }
+
+})
 
 const init = async () => {
     try {

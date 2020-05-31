@@ -30,12 +30,15 @@
   },
   "dependencies": {
     "@hapi/hapi": "^19.1.1",
+    "@hapi/joi": "^17.1.1",
     "@types/hapi": "^18.0.3",
+    "@types/joi": "^14.3.4",
     "@types/node": "^14.0.5",
     "dotenv": "^8.2.0",
     "hapi-pino": "^8.0.1",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@hapi/code": "^8.0.1",

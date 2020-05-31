@@ -12,7 +12,7 @@ import {Board} from "../src/game";
 describe("basic game", () => {
   let game:Board;
   beforeEach(() => {
-    game = new Board(1);
+    game = new Board("1");
     game.print();
   });
 
