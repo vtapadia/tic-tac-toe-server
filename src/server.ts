@@ -1,5 +1,6 @@
 import * as Hapi from "@hapi/hapi";
 import * as Joi from "@hapi/joi";
+import * as Nes from "@hapi/nes";
 import {v4 as uuid} from 'uuid';
 import {Board} from "./game";
 import {Player} from "./player";
@@ -30,14 +31,16 @@ server.route({
         let gameId = request.params.gameId ? request.params.gameId : uuid();
         
         if (request.params.gameId) {
-            request.logger.info("Joining a game request");
+            request.log('info', "Joining a game request");
             //Join game flow
             if (allGames.has(request.params.gameId)) {
                 let b = allGames.get(request.params.gameId);
                 b.addPlayer(player);
+                let publishUrl = "/game/"+gameId;
+                server.publish(publishUrl, {msg: "Player " + player.name + " joined.", game: "ready"});
             } else {
                 //Game not found. 
-                request.logger.error("Game ID not found");
+                request.log('error', "Game ID not found");
             }
         } else {
             //Create game
@@ -60,6 +63,8 @@ server.route({
 
 const init = async () => {
     try {
+        await server.register(Nes);
+        server.subscription('/game/{gameId}');
         await server.start(); // the builtin server.start method is async
     } catch (err) {
         console.error(err);

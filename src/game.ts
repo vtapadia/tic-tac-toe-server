@@ -7,12 +7,12 @@ export class Board {
   inProgress: boolean = true;
   
   constructor(readonly id:string){
-    this.board = [[,,],[,,],[,,]];
+    this.board = [...Array(3)].map(x=>Array(3).fill(undefined));
   }
 
-  play(m:Mark, c:Column):Mark[][] {
-    if (this.board[c.x][c.y] == undefined) {
-      this.board[c.x][c.y] = m;
+  play(m:Mark, point:Point):Mark[][] {
+    if (this.board[point.row][point.col] == undefined) {
+      this.board[point.row][point.col] = m;
       return this.board;
     } else {
       throw new Error("Invalid task")
@@ -36,6 +36,10 @@ export class Board {
       this.inProgress = false;
     }
     return this.inProgress;
+  }
+
+  haveSaveValue(a:Mark | undefined, b:Mark | undefined, c:Mark | undefined) {
+    return (a!= undefined && a == b && b == c);
   }
 
   //Resets the board
@@ -67,16 +71,8 @@ export class Board {
   }
 }
 
-interface iColumun {
-  x: number;
-  y: number;
-}
-
-class Column implements iColumun {
-  constructor(readonly x:number, readonly y:number){}
-}
-
 enum Mark {
-  X,O
+  X="X",
+  O="O"
 };
 
