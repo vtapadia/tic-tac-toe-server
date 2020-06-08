@@ -6,7 +6,7 @@ const lab = Lab.script();
 const { describe, it, beforeEach } = lab;
 export { lab };
 
-import {Board} from "../src/game";
+import {Board} from "../src/model/game";
 
 
 describe("basic game", () => {

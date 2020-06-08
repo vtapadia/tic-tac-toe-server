@@ -2,8 +2,9 @@ import * as Hapi from "@hapi/hapi";
 import * as Joi from "@hapi/joi";
 import * as Nes from "@hapi/nes";
 import {v4 as uuid} from 'uuid';
-import {Board} from "./game";
+import {Board} from "./model/game";
 import {Player} from "./player";
+import * as gameManager from "./manager/gameManager"
 
 const port:number = parseInt(process.env.PORT) || 3000;
 
@@ -12,7 +13,6 @@ const server:Hapi.Server = new Hapi.Server({
     host: '0.0.0.0'
 });
 
-const allGames = new Map();
 
 server.route({
     method: 'GET',
@@ -33,8 +33,8 @@ server.route({
         if (request.params.gameId) {
             request.log('info', "Joining a game request");
             //Join game flow
-            if (allGames.has(request.params.gameId)) {
-                let b = allGames.get(request.params.gameId);
+            if (gameManager.hasGame(request.params.gameId)) {
+                let b = gameManager.getGame(request.params.gameId);
                 b.addPlayer(player);
                 let publishUrl = "/game/"+gameId;
                 server.publish(publishUrl, {msg: "Player " + player.name + " joined.", game: "ready"});
@@ -44,9 +44,9 @@ server.route({
             }
         } else {
             //Create game
-            let b = new Board(gameId);
-            b.addPlayer(player);
-            allGames.set(b.id, b);
+            let id = gameManager.newGame();
+            gameManager.getGame(id).addPlayer(player);
+            return {gameId: id, player: player};
         }
         // const userName = request.params.gameId ? request.params.user : 'Guest';
         return {"game": gameId, "player": player};
