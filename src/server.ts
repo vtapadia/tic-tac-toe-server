@@ -2,7 +2,6 @@ import * as Hapi from "@hapi/hapi";
 import * as Joi from "@hapi/joi";
 import * as Nes from "@hapi/nes";
 import {v4 as uuid} from 'uuid';
-import {Board} from "./model/game";
 import {Player} from "./player";
 import * as gameManager from "./manager/gameManager"
 
@@ -24,41 +23,38 @@ server.route({
 
 server.route({
     method: 'POST',
-    path: '/api/game/{gameId?}', 
+    path: '/api/game/{gameId}/player',
     handler: function (request, h) {
-        let userName = (request.payload && request.payload.userName) ? request.payload.userName : 'Guest';
-        let player = new Player(uuid(), userName);
-        let gameId = request.params.gameId ? request.params.gameId : uuid();
-        
-        if (request.params.gameId) {
-            request.log('info', "Joining a game request");
-            //Join game flow
-            if (gameManager.hasGame(request.params.gameId)) {
-                let b = gameManager.getGame(request.params.gameId);
-                b.addPlayer(player);
-                let publishUrl = "/game/"+gameId;
-                server.publish(publishUrl, {msg: "Player " + player.name + " joined.", game: "ready"});
-            } else {
-                //Game not found. 
-                request.log('error', "Game ID not found");
-            }
+        let gameId = request.params.gameId;
+        if (gameManager.hasGame(gameId)) {
+            let game = gameManager.getGame(gameId);
+            let player = new Player(uuid(), request.payload.name);
+            game.addPlayer(player);
+            let publishUrl = "/game/"+gameId;
+            server.publish(publishUrl, {msg: "Player " + player.name + " joined.", game: "ready"});
+            return 
         } else {
-            //Create game
-            let id = gameManager.newGame();
-            gameManager.getGame(id).addPlayer(player);
-            return {gameId: id, player: player};
+            throw Error("Game not found");
         }
-        // const userName = request.params.gameId ? request.params.user : 'Guest';
-        return {"game": gameId, "player": player};
     },
     options: {
         validate: {
             payload: Joi.object({
-                userName: Joi.string().min(1).max(140)
+                name: Joi.string().min(1).max(140)
             })
         }
     }
+});
 
+server.route({
+    method: 'POST',
+    path: '/api/game',
+    handler: function (request, h) {
+        // let gameId = request.params.gameId ? request.params.gameId : uuid();
+        let id = gameManager.newGame();
+        
+        return {gameId: id};
+    }
 })
 
 const init = async () => {

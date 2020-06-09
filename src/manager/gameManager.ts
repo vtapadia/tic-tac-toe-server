@@ -20,6 +20,6 @@ export const getGame = (id:string) => allGames.get(id);
 
 //Iterative method to find the next game ID
 export function newId() {
-  let id = (Math.floor(Math.random()*Math.pow(10, idLength))).toString().padStart(idLength, "0");
+  let id = (Math.floor(Math.random() * Math.pow(10, idLength))).toString().padStart(idLength, "0");
   return (allGames.has(id)) ? newId() : id; 
 }
