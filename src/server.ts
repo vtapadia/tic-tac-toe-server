@@ -4,6 +4,7 @@ import * as Nes from "@hapi/nes";
 import {v4 as uuid} from 'uuid';
 import {Player} from "./player";
 import * as gameManager from "./manager/gameManager"
+import { HealthPlugin } from 'hapi-k8s-health'
 
 const port:number = parseInt(process.env.PORT) || 3000;
 
@@ -12,6 +13,17 @@ const server:Hapi.Server = new Hapi.Server({
     host: '0.0.0.0'
 });
 
+server.register({
+    plugin: HealthPlugin,
+    options: {
+      livenessProbes: {
+        status: () => Promise.resolve('Yeah !')
+      },
+      readinessProbes: {
+        ready: () => Promise.resolve('All Ready')
+      }
+    }
+})
 
 server.route({
     method: 'GET',

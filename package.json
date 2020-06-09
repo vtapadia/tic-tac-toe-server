@@ -36,6 +36,7 @@
     "@types/joi": "^14.3.4",
     "@types/node": "^14.0.5",
     "dotenv": "^8.2.0",
+    "hapi-k8s-health": "^1.1.1",
     "hapi-pino": "^8.0.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.3",
