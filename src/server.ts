@@ -41,10 +41,19 @@ server.route({
         if (gameManager.hasGame(gameId)) {
             let game = gameManager.getGame(gameId);
             let player = new Player(uuid(), request.payload.name);
-            game.addPlayer(player);
+            let mark = game.addPlayer(player);
             let publishUrl = "/game/"+gameId;
-            server.publish(publishUrl, {msg: "Player " + player.name + " joined.", game: "ready"});
-            return 
+            let webMessage = {
+                type: "PLAYER_JOIN",
+                msg: "Player " + player.name + "joined",
+                game: {
+                    status: game.status,
+                    turn: game.turn,
+                    winner: game.winner
+                }
+            }
+            server.publish(publishUrl, webMessage);
+            return {mark: mark};
         } else {
             throw Error("Game not found");
         }

@@ -90,12 +90,13 @@ getEmptyPlaces(board: Mark[][]):Point[] {
   return empty;
 }
 
-  addPlayer(player: Player) {
+  addPlayer(player: Player):Mark {
     if (this.players.X && this.players.O) {
       throw new Error("Maximum players already joined");
     }
     let mark = (this.players.X) ? Mark.O : Mark.X;
     this.players[mark] = player;
+    return mark;
   }
 }
 
