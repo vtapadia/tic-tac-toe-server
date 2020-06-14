@@ -1,3 +1,5 @@
-export class Player {
-  constructor(readonly name:String, readonly displayName?:string){}
+export interface Player {
+  name:String
+  displayName?:string
+  self?:boolean
 }

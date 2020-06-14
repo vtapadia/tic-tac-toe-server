@@ -11,7 +11,8 @@ const port:number = parseInt(process.env.PORT) || 3000;
 
 const server:Hapi.Server = new Hapi.Server({
     port: port,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    debug: { request: ['*'] }
 });
 
 server.register({
@@ -62,7 +63,8 @@ server.route({
         validate: {
             payload: Joi.object({
                 name: Joi.string().min(1).max(140),
-                displayName: Joi.string().min(1).max(140)
+                displayName: Joi.string().min(1).max(140),
+                self: Joi.boolean()
             })
         }
     }
@@ -113,7 +115,13 @@ server.route({
         console.log("Game ID requested for : %s", gameId);
         if (gameManager.hasGame(gameId)) {
             let game = gameManager.getGame(gameId);
-            return game;
+            return {
+                status: game.status,
+                turn: game.turn,
+                players: game.players
+            };
+        } else {
+            throw Error("Game not found");
         }
     }
 })
