@@ -2,10 +2,11 @@ import {Player} from "../player";
 import {Mark, Point, Status} from "../types/appTypes";
 
 export class Board {
+  status: Status = Status.INITIAL;
   players: { [key in Mark]: Player | undefined};
   board: Mark[][];
   turn: Mark = Mark.X;
-  status: Status = Status.INITIAL;
+  startedBy: Mark = Mark.X;
   winner: Mark | undefined = undefined;
 
   constructor(readonly id:string){
@@ -19,14 +20,23 @@ export class Board {
   play(m:Mark, point:Point):Mark[][] {
     if (this.board[point.row][point.col] == undefined) {
       this.board[point.row][point.col] = m;
+      this.turn = this.toggle(this.turn);
       return this.board;
     } else {
       throw new Error("Invalid task")
     }
   }
 
+  isPlayersMark(player:Player, mark:Mark) {
+    return this.players[mark].name == player.name;
+  }
+
   haveSaveValue(a:Mark | undefined, b:Mark | undefined, c:Mark | undefined) {
     return (a!= undefined && a == b && b == c);
+  }
+
+  toggle(mark: Mark):Mark {
+    return (mark == Mark.X) ? Mark.O : Mark.X;
   }
 
   //Resets the board
@@ -78,24 +88,37 @@ hasEnded(board: Mark[][]):[boolean, Mark | undefined] {
   return [false, undefined];
 }
 
-getEmptyPlaces(board: Mark[][]):Point[] {
-  let empty:Point[] = Array.of();
-  for (let i=0; i < 3; i++) {
-    for (let j=0; j<3; j++) {
-      if (board[i][j] == undefined) {
-        empty.push({row: i, col: j});
+  getEmptyPlaces(board: Mark[][]):Point[] {
+    let empty:Point[] = Array.of();
+    for (let i=0; i < 3; i++) {
+      for (let j=0; j<3; j++) {
+        if (board[i][j] == undefined) {
+          empty.push({row: i, col: j});
+        }
       }
     }
+    return empty;
   }
-  return empty;
-}
 
   addPlayer(player: Player):Mark {
-    if (this.players.X && this.players.O) {
+    if (this.players.X) {
+      if (this.players.X.name == player.name) {
+        return Mark.X;
+      }
+    }
+    if (this.players.O) {
+      if (this.players.O.name == player.name) {
+        return Mark.O;
+      }
+    }
+    if (this.status == Status.READY) {
       throw new Error("Maximum players already joined");
     }
     let mark = (this.players.X) ? Mark.O : Mark.X;
     this.players[mark] = player;
+    if (this.players.X && this.players.O && this.status == Status.INITIAL) {
+      this.status = Status.READY;
+    }
     return mark;
   }
 }

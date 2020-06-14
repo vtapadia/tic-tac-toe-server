@@ -10,7 +10,7 @@ export enum Mark {
 };
 
 export enum Status {
-  INITIAL,
-  READY,
-  FINISHED
+  INITIAL="INITIAL",
+  READY="READY",
+  FINISHED="FINISHED"
 }

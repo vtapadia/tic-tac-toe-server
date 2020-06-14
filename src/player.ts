@@ -1,3 +1,3 @@
 export class Player {
-  constructor(readonly id:String, readonly name:String){}
+  constructor(readonly name:String, readonly displayName?:string){}
 }

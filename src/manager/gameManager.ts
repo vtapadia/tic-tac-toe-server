@@ -7,7 +7,7 @@ export function setIdLength(l: number) {
   idLength = l;
 }
 
-export const allGames = new Map();
+export const allGames = new Map<string, Board>();
 
 export function newGame():string {
   let id:string = newId();
