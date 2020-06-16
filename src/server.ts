@@ -133,6 +133,36 @@ server.route({
 
 server.route({
     method: 'POST',
+    path: '/api/game/{gameId}/replay',
+    handler: function (request, h) {
+        let gameId = request.params.gameId;
+        if (gameManager.hasGame(gameId)) {
+            let game = gameManager.getGame(gameId);
+            let player = request.payload as Player;
+
+            if (game.isPlayer(player)) {
+                game.replay();
+
+                let publishUrl = "/game/"+gameId;
+                let webMessage = {
+                    type: "REPLAY",
+                    game: {
+                        status: game.status,
+                        turn: game.turn,
+                    }
+                }
+                server.publish(publishUrl, webMessage);
+                return {code: "M0000", message: "all good"};
+            } else {
+                return {code: "M4200", message: "player not belong to game"};
+            }
+        } else {
+            return {code: "M4100", message: "Game not found"};
+        }
+    }
+});
+server.route({
+    method: 'POST',
     path: '/api/game',
     handler: function (request, h) {
         let id = gameManager.newGame();

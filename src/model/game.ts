@@ -20,11 +20,28 @@ export class Board {
   play(m:Mark, point:Point):Mark[][] {
     if (this.board[point.row][point.col] == undefined) {
       this.board[point.row][point.col] = m;
+      let [finished, winner] = this.hasEnded(this.board);
+      if (finished) {
+        this.status = Status.FINISHED;
+        this.winner = winner;
+      }
       this.turn = this.toggle(this.turn);
       return this.board;
     } else {
       throw new Error("Invalid task")
     }
+  }
+
+  replay() {
+    this.board = [...Array(3)].map(x=>Array(3).fill(undefined));
+    this.status = Status.READY;
+    this.startedBy = this.toggle(this.startedBy);
+    this.turn = this.startedBy;
+    this.winner = undefined;
+  }
+
+  isPlayer(player:Player) {
+    return this.isPlayersMark(player, Mark.X) || this.isPlayersMark(player, Mark.O);
   }
 
   isPlayersMark(player:Player, mark:Mark) {
