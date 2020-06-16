@@ -91,12 +91,12 @@ server.route({
                     }
                 }
                 server.publish(publishUrl, webMessage);
-                return;
+                return {code: "M0000", message: "all good"};
             } else {
-                throw new Error("Not players mark");
+                return {code: "M4000", message: "not players mark"};
             }
         } else {
-            throw Error("Game not found");
+            return {code: "M4100", message: "Game not found"};
         }
     }
 });
@@ -105,6 +105,11 @@ interface MoveInput {
     mark: Mark
     point: Point
     player: Player
+}
+
+interface SimpleResponse {
+    code: string
+    msg: string
 }
 
 server.route({
