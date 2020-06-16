@@ -5,7 +5,7 @@ import {v4 as uuid} from 'uuid';
 import {Player} from "./player";
 import * as gameManager from "./manager/gameManager"
 import { HealthPlugin } from 'hapi-k8s-health'
-import { Mark, Point } from "./types/appTypes";
+import { Mark, Point, Status } from "./types/appTypes";
 
 const port:number = parseInt(process.env.PORT) || 3000;
 
@@ -141,23 +141,26 @@ server.route({
             let player = request.payload as Player;
 
             if (game.isPlayer(player)) {
-                game.replay();
-
-                let publishUrl = "/game/"+gameId;
-                let webMessage = {
-                    type: "REPLAY",
-                    game: {
-                        status: game.status,
-                        turn: game.turn,
+                if (game.status == Status.FINISHED) {
+                    game.replay();
+                    let publishUrl = "/game/"+gameId;
+                    let webMessage = {
+                        type: "REPLAY",
+                        game: {
+                            status: game.status,
+                            turn: game.turn,
+                        }
                     }
+                    server.publish(publishUrl, webMessage);
+                    return simpleResponses.SUCCESS;
+                } else {
+                    return simpleResponses.GAME_STATUS_INVALID;
                 }
-                server.publish(publishUrl, webMessage);
-                return {code: "M0000", message: "all good"};
             } else {
-                return {code: "M4200", message: "player not belong to game"};
+                return simpleResponses.PLAYER_NOT_IN_GAME;
             }
         } else {
-            return {code: "M4100", message: "Game not found"};
+            return simpleResponses.GAME_NOT_FOUND;
         }
     }
 });
@@ -170,6 +173,13 @@ server.route({
         return {gameId: id};
     }
 })
+
+let simpleResponses = {
+    SUCCESS: {code: "M0000", message: "all good"},
+    GAME_STATUS_INVALID: {code: "M1000", message: "Game not in correct status for replay"},
+    PLAYER_NOT_IN_GAME: {code: "M4200", message: "player not belong to game"},
+    GAME_NOT_FOUND: {code: "M4100", message: "Game not found"}
+}
 
 const init = async () => {
     try {
